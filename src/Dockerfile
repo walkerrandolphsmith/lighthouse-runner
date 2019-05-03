@@ -15,11 +15,12 @@ RUN chmod +x /usr/local/bin/dumb-init
 
 WORKDIR /usr/src/app
 
-COPY ./index.js ./index.js
 COPY ./package.json ./package.json
 COPY ./package-lock.json ./package-lock.json
-COPY ./wait-for-it.sh ./wait-for-it.sh
 
 RUN npm install --no-progress --ignore-optional --silent
+
+COPY ./index.js ./index.js
+COPY ./wait-for-it.sh ./wait-for-it.sh
 
 ENTRYPOINT ["./wait-for-it.sh"]

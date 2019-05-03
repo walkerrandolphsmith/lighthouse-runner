@@ -26,20 +26,33 @@ const opts = {
   ]
 };
 
-const url = process.env.SUT_URL; //'https://localhost:443';
-
-run(url, opts)
+run(process.env.SUT_URL, opts)
+  .then(verbosePrintSideEffect)
   .then(calculateScores)
   .then(failOnPoorPerformance)
   .catch(handleError);
 
-function calculateScores(results = { categories: [] }) {
-  return Object.keys(results.categories).reduce((output, categoryName) => {
-    var category = results.categories[categoryName];
+function verbosePrintSideEffect(results = { categories: [] }) {
+  if (process.env.VERBOSE) {
+    log(results.categories);
+  }
+  return results.categories;
+}
+
+function calculateScores(categories) {
+  return Object.keys(categories).reduce((output, categoryName) => {
+    var category = categories[categoryName];
     const details = {};
     details[categoryName] = { title: category.title, score: category.score };
     return Object.assign({}, output, details);
   }, {});
+}
+
+function log(...args) {
+  if (process.env.SILENT) {
+    return;
+  }
+  console.log(...args);
 }
 
 function failOnPoorPerformance(scores) {
@@ -47,14 +60,15 @@ function failOnPoorPerformance(scores) {
   Object.keys(scores).forEach(function(categoryName) {
     const categoryScore = scores[categoryName].score;
     if (categoryScore < 1) {
-      console.error(stringified);
+      log(stringified);
       process.exit(1);
     }
   });
-  console.log(stringified);
+  log(stringified);
   process.exit(0);
 }
 
 function handleError(error) {
-  console.log("handled error", error);
+  log("Unexpected Error: ", error);
+  process.exit(1);
 }
