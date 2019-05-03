@@ -2,11 +2,11 @@ version: "3.3"
 services:
   lighthouse:
     build:
-      context: .
+      context: ./../src
       dockerfile: Dockerfile
     image: lighthouse-image
     container_name: lighthouse-container
     network_mode: "host"
     command: ["bash"]
     environment:
-      - SUT_URL=http://localhost:80
+      - SUT_URL=http://localhost:8000

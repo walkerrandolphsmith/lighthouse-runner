@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  sut:
+    build:
+      context: ./sut
+      dockerfile: Dockerfile
+    image: sut-image
+    container_name: sut-container
+    ports:
+      - "8000:8000"

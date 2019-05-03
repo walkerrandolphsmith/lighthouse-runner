@@ -1,32 +1,42 @@
 #!/usr/bin/env bash
 
-function build() {
-  docker-compose -f docker-compose.yml build lighthouse
+function install() {
+  docker-compose \
+    -f example/docker-compose-sut.yml \
+    -f example/docker-compose.yml \
+    build
+}
+
+function uninstall() {
+  docker-compose \
+    -f example/docker-compose-sut.yml \
+    -f example/docker-compose.yml \
+    down --rmi all
 }
 
 function up() {
-  echo "statrting service"
    docker-compose \
-      -f docker-compose.yml \
+      -f example/docker-compose-sut.yml \
+      -f example/docker-compose.yml \
       up --exit-code-from "lighthouse"
 }
 
 function down() {
-  docker-compose -f docker-compose.yml down lighthouse
+  docker-compose \
+    -f example/docker-compose-sut.yml \
+    -f example/docker-compose.yml \
+    down
 }
 
-function destroy() {
-  docker-compose -f docker-compose.yml down --rmi all
-}
 
 command=$1
 
 case $command in
-    build)
-        build
+    install)
+        install
         ;;
-    destroy)
-        destroy
+    uninstall)
+        uninstall
         ;;
     up)
         up
